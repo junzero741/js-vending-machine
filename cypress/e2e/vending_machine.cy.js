@@ -1,10 +1,10 @@
-describe('자판기 상품관리 테스트', () => {
+describe('자판기 상품관리 페이지 테스트', () => {
 	beforeEach(() => {
 		cy.visit('/#/products')
 	})
 
-	it('그냥테스트', () => {
-		cy.get('#product-manage-menu').should('be.visible')
+	it('상품 추가 폼이 화면에 보인다.', () => {
+		cy.get('.cashbox-remaining').should('be.visible')
 	})
 })
 
