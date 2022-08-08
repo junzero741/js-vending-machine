@@ -1,24 +1,17 @@
 import { buttonSelector } from './const/selector.js'
 import createRouter from './router.js'
+import createPages from './pages.js'
 
+const container = document.querySelector('#app')
 const router = createRouter()
+const pages = createPages(container)
 router
-	.addRoute('#/', () => {
-		console.log('products page')
-	})
-	.addRoute('#/products', () => {
-		console.log('products page')
-	})
-	.addRoute('#/charge', () => {
-		console.log('charge page')
-	})
-	.addRoute('#/purchase', () => {
-		console.log('purchase page')
-	})
-	.setNotFound(() => {
-		console.log('not found page')
-	})
-router.start()
+	.addRoute('#/', pages.products)
+	.addRoute('#/products', pages.products)
+	.addRoute('#/charge', pages.charge)
+	.addRoute('#/purchase', pages.purchase)
+	.setNotFound(pages.notFound)
+	.start()
 
 document.body.addEventListener('click', (ev) => {
 	const { target } = ev
