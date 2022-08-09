@@ -1,10 +1,11 @@
 import { buttonSelector } from './const/selector.js'
 import createRouter from './router.js'
 import createPages from './pages.js'
+import { ProductsManageMenu } from './menus/ProductsManageMenu.js'
 
 const container = document.querySelector('#app')
-const router = createRouter()
 const pages = createPages(container)
+const router = createRouter()
 router
 	.addRoute('#/', pages.products)
 	.addRoute('#/products', pages.products)
@@ -20,3 +21,5 @@ document.body.addEventListener('click', (ev) => {
 		router.navigate(navigate)
 	}
 })
+
+customElements.define('products-manage-menu', ProductsManageMenu)

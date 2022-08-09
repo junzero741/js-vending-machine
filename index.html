@@ -5,14 +5,38 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="stylesheet" href="./index.css" />
-		<title>NEXTSTEP JavaScript Vending machine</title>
+		<title>자판기</title>
 	</head>
 
 	<body>
-		<button id="product-manage-menu" data-navigate="/products">상품 관리</button>
-		<button id="vending-machine-manage-menu" data-navigate="/charge">잔돈충전</button>
-		<button id="product-purchase-menu" data-navigate="/purchase">상품 구매</button>
-
+		<products-manage-menu></products-manage-menu>
+		<template id="products-manage-menu">
+			<h3>상품 추가하기</h3>
+			<div class="product-container">
+				<input type="text" id="product-name-input" placeholder="상품명" />
+				<input type="number" id="product-price-input" placeholder="가격" />
+				<input type="number" id="product-quantity-input" placeholder="수량" />
+				<button id="product-add-button">추가하기</button>
+			</div>
+			<table class="product-inventory">
+				<colgroup>
+					<col style="width: 140px" />
+					<col style="width: 100px" />
+					<col style="width: 100px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th>상품명</th>
+						<th>가격</th>
+						<th>수량</th>
+					</tr>
+				</thead>
+				<tbody id="product-inventory-container"></tbody>
+			</table>
+		</template>
+		<button data-navigate="/products">상품 관리</button>
+		<button data-navigate="/charge">잔돈충전</button>
+		<button data-navigate="/purchase">상품 구매</button>
 		<div id="app"></div>
 		<script type="module" src="./src/js/index.js"></script>
 	</body>

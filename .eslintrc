@@ -5,6 +5,7 @@
 	},
 	"plugins": ["prettier", "cypress"],
 	"rules": {
+		"linebreak-style": ["error", "unix"],
 		"import/extensions": ["always"],
 		"prettier/prettier": ["error"],
 		"cypress/no-assigning-return-values": "error",
