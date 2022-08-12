@@ -3,8 +3,12 @@ describe('자판기 상품관리 페이지 테스트', () => {
 		cy.visit('/#/products')
 	})
 
-	it('상품 추가 폼이 화면에 보인다.', () => {
-		cy.get('.cashbox-remaining').should('be.visible')
+	// it('상품 추가 폼이 화면에 보인다.', () => {
+	// 	cy.get('.cashbox-remaining').should('be.visible')
+	// })
+
+	it('몰라', () => {
+		cy.get('#boo').shadow().find('#product-name-input').type('bee')
 	})
 })
 

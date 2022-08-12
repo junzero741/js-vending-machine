@@ -1,6 +1,8 @@
+import { ProductsManageMenu } from './menus/ProductsManageMenu.js'
+
 export default (container) => {
 	const products = () => {
-		container.innerHTML = '상품관리페이지'
+		customElements.define('products-manage-menu', ProductsManageMenu)
 	}
 
 	const charge = () => {
