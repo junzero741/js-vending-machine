@@ -1,16 +1,14 @@
-import { ProductsManageMenu } from './menus/ProductsManageMenu.js'
-
 export default (container) => {
 	const products = () => {
-		customElements.define('products-manage-menu', ProductsManageMenu)
+		container.innerHTML = document.createElement('products-manage-menu').outerHTML
 	}
 
 	const charge = () => {
-		container.innerHTML = '잔돈충전페이지'
+		container.innerHTML = document.createElement('vending-machine-manage-menu').outerHTML
 	}
 
 	const purchase = () => {
-		container.innerHTML = '상품구매페이지'
+		container.innerHTML = document.createElement('product-purchase-menu').outerHTML
 	}
 
 	const notFound = () => {

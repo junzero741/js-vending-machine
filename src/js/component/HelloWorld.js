@@ -6,6 +6,9 @@ const createDomElement = (color) => {
 	const div = document.createElement('div')
 	div.textContent = 'Hello World!'
 	div.style.color = color
+	div.addEventListener('click', () => {
+		console.log('click~')
+	})
 	return div
 }
 

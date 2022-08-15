@@ -2,13 +2,8 @@ import { buttonSelector } from './const/selector.js'
 import createRouter from './router.js'
 import createPages from './pages.js'
 import componentsRegistry from './component/registry.js'
-import changeColorTo from './event/changeColorTo.js'
 
 componentsRegistry()
-
-document.querySelector('#color-btn').addEventListener('click', () => {
-	changeColorTo('blue')
-})
 
 const container = document.querySelector('#app')
 const pages = createPages(container)
