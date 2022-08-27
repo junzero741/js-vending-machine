@@ -1,38 +1,61 @@
 export class ProductsManageMenu extends HTMLElement {
+	#STORAGE_KEY = 'products'
+
 	constructor() {
 		super()
 		this.shadow = this.attachShadow({ mode: 'open' })
+		this.$template = document.querySelector('#products-manage-menu').content.cloneNode(true)
 
-		const $template = document.querySelector('#products-manage-menu').content.cloneNode(true)
+		this.init()
+	}
+
+	init() {
+		this.attachStyleSheet()
+		this.attachEventsToElements()
+		this.renderProducts()
+		this.shadow.appendChild(this.$template)
+	}
+
+	attachStyleSheet() {
 		const $link = document.createElement('link')
 
 		$link.setAttribute('rel', 'stylesheet')
 		$link.setAttribute('href', 'index.css')
 
-		this.$productAddButton = $template.querySelector('#product-add-button')
-		this.$productNameInput = $template.querySelector('#product-name-input')
-		this.$productPriceInput = $template.querySelector('#product-price-input')
-		this.$productQuantityInput = $template.querySelector('#product-quantity-input')
-
-		this.shadow.appendChild($template)
 		this.shadow.appendChild($link)
-		this.init()
 	}
 
-	init() {
-		this.$productAddButton.addEventListener('click', () => {
-			const [name, price, quantity] = [
-				this.$productNameInput.value,
-				this.$productPriceInput.value,
-				this.$productQuantityInput.value,
-			]
+	attachEventsToElements() {
+		const productAddButton = this.$template.querySelector('#product-add-button')
+		productAddButton.addEventListener('click', this.addProduct.bind(this))
+	}
+
+	getLocalStorageProducts() {
+		return JSON.parse(localStorage.getItem(this.#STORAGE_KEY)) || []
+	}
+
+	renderProducts() {
+		const products = this.getLocalStorageProducts()
+		products.forEach(({ name, price, quantity }) => {
 			this.addTableRow(name, price, quantity)
-			this.saveProduct(name, price, quantity)
 		})
 	}
 
+	addProduct() {
+		const shadowDOM = document.querySelector('products-manage-menu').shadowRoot
+
+		const [name, price, quantity] = [
+			shadowDOM.querySelector('#product-name-input').value,
+			shadowDOM.querySelector('#product-price-input').value,
+			shadowDOM.querySelector('#product-quantity-input').value,
+		]
+		this.addTableRow(name, price, quantity)
+		this.saveProductToLocalStorage(name, price, quantity)
+	}
+
 	addTableRow(name, price, quantity) {
-		const $container = this.shadow.querySelector('#product-inventory-container')
+		console.log(this)
+		const $container = this.$template.querySelector('#product-inventory-container')
 		const $row = document.createElement('tr')
 		const $productName = document.createElement('td')
 		const $productPrice = document.createElement('td')
@@ -49,10 +72,9 @@ export class ProductsManageMenu extends HTMLElement {
 		$row.append($productQuantity)
 	}
 
-	saveProduct(name, price, quantity) {
-		const STORAGE_KEY = 'products'
+	saveProductToLocalStorage(name, price, quantity) {
+		const products = this.getLocalStorageProducts()
 		const productObj = { name, price, quantity }
-		const products = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []
 		const productIndex = products.findIndex((el) => el.name === name)
 
 		if (productIndex !== -1) {
@@ -61,6 +83,6 @@ export class ProductsManageMenu extends HTMLElement {
 			products.push(productObj)
 		}
 
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(products))
+		localStorage.setItem(this.#STORAGE_KEY, JSON.stringify(products))
 	}
 }
