@@ -3,12 +3,17 @@ describe('자판기 상품관리 페이지 테스트', () => {
 		cy.visit('/#/products')
 	})
 
-	// it('상품 추가 폼이 화면에 보인다.', () => {
-	// 	cy.get('.cashbox-remaining').should('be.visible')
-	// })
-
-	it('몰라', () => {
-		cy.get('#boo').shadow().find('#product-name-input').type('bee')
+	it('상품을 추가하면 로컬스토리지에 해당 상품 정보가 저장된다.', () => {
+		const itemName = '코카'
+		const itemPrice = '100'
+		const itemQuantity = '10'
+		cy.submitProductForm(itemName, itemPrice, itemQuantity).then(() => {
+			const products = JSON.parse(localStorage.getItem('products'))
+			const addedProduct = products[products.length - 1]
+			cy.expect(addedProduct.name).to.equal(itemName)
+			cy.expect(addedProduct.price).to.equal(itemPrice)
+			cy.expect(addedProduct.quantity).to.equal(itemQuantity)
+		})
 	})
 })
 

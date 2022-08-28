@@ -23,3 +23,10 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('submitProductForm', (productName, productPrice, productQuantity) => {
+	cy.get('products-manage-menu').shadow().find('#product-name-input').type(productName)
+	cy.get('products-manage-menu').shadow().find('#product-price-input').type(productPrice)
+	cy.get('products-manage-menu').shadow().find('#product-quantity-input').type(productQuantity)
+	cy.get('products-manage-menu').shadow().find('#product-add-button').click()
+})
