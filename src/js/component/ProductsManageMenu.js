@@ -221,7 +221,7 @@ export class ProductsManageMenu extends HTMLElement {
 
 	connectedCallback() {
 		this.renderProducts()
-		this.shadowRoot.querySelector('#product-add-button').addEventListener('click', this.addProduct.bind(this))
+		this.shadowRoot.querySelector('#product-add-button').addEventListener('click', this.handleSubmittedProduct)
 	}
 
 	getLocalStorageProducts() {
@@ -235,18 +235,49 @@ export class ProductsManageMenu extends HTMLElement {
 		})
 	}
 
-	addProduct() {
-		const shadowDOM = document.querySelector('products-manage-menu').shadowRoot
+	isProductNameInputValid(name) {
+		return name !== ''
+	}
 
+	isProductPriceInputValid(price) {
+		const MIN_PRICE = 100
+		const UNIT_PRICE = 10
+
+		return price >= MIN_PRICE && price % UNIT_PRICE === 0
+	}
+
+	isProductQuantityInputValid(quantity) {
+		const MIN_QUANTITY = 1
+
+		return quantity >= MIN_QUANTITY
+	}
+
+	findProductByIndex(productName) {
+		return this.products.findIndex((product) => product.name === productName)
+	}
+
+	handleSubmittedProduct = () => {
 		const [name, price, quantity] = [
-			shadowDOM.querySelector('#product-name-input').value,
-			shadowDOM.querySelector('#product-price-input').value,
-			shadowDOM.querySelector('#product-quantity-input').value,
+			this.shadowRoot.querySelector('#product-name-input').value,
+			this.shadowRoot.querySelector('#product-price-input').value,
+			this.shadowRoot.querySelector('#product-quantity-input').value,
 		]
 
-		if (name && price && quantity) {
-			this.addTableRow(name, price, quantity)
-			this.saveProductToLocalStorage(name, price, quantity)
+		try {
+			if (!this.isProductNameInputValid(name)) throw Error(`입력한 상품 이름이 유효하지 않습니다. 입력값 : ${name} `)
+			if (!this.isProductPriceInputValid(price)) throw Error(`입력한 상품 가격이 유효하지 않습니다. 입력값 : ${price} `)
+			if (!this.isProductQuantityInputValid(quantity))
+				throw Error(`입력한 상품 수량이 유효하지 않습니다. 입력값 : ${quantity} `)
+
+			if (this.findProductByIndex(name) !== -1) {
+				this.replaceTableRow(name, price, quantity)
+				this.replaceProduct(name, price, quantity)
+			} else {
+				this.addTableRow(name, price, quantity)
+				this.saveProduct(name, price, quantity)
+			}
+		} catch (err) {
+			console.error(err)
 		}
 	}
 
@@ -269,26 +300,30 @@ export class ProductsManageMenu extends HTMLElement {
 		return $row
 	}
 
-	replaceTableRow(name, price, quantity) {}
+	replaceTableRow(name, price, quantity) {
+		const $table = this.shadowRoot.querySelector('#product-inventory-container')
+		const productIndex = this.findProductByIndex(name)
+		const currentRow = $table.children[productIndex]
+		const newRow = this.createProductRow(name, price, quantity)
 
-	addTableRow(name, price, quantity) {
-		const $container = this.shadowRoot.querySelector('#product-inventory-container')
-		const $row = this.createProductRow(name, price, quantity)
-
-		$container.append($row)
+		currentRow.parentNode.replaceChild(newRow, currentRow)
 	}
 
-	saveProductToLocalStorage(name, price, quantity) {
-		const products = this.products
-		const productObj = { name, price, quantity }
-		const productIndex = products.findIndex((el) => el.name === name)
+	addTableRow(name, price, quantity) {
+		const $table = this.shadowRoot.querySelector('#product-inventory-container')
+		const $row = this.createProductRow(name, price, quantity)
 
-		if (productIndex !== -1) {
-			products[productIndex] = productObj
-		} else {
-			products.push(productObj)
-		}
+		$table.append($row)
+	}
 
-		localStorage.setItem(this.#STORAGE_KEY, JSON.stringify(products))
+	replaceProduct(name, price, quantity) {
+		const productIndex = this.findProductByIndex(name)
+		this.products[productIndex] = { name, price, quantity }
+		localStorage.setItem(this.#STORAGE_KEY, JSON.stringify(this.products))
+	}
+
+	saveProduct(name, price, quantity) {
+		this.products.push({ name, price, quantity })
+		localStorage.setItem(this.#STORAGE_KEY, JSON.stringify(this.products))
 	}
 }
