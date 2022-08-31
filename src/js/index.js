@@ -18,7 +18,7 @@ router
 
 document.body.addEventListener('click', (ev) => {
 	const { target } = ev
-	if (target.matches(buttonSelector.NAV_BTN_SELECTOR)) {
+	if (target.matches(buttonSelector.NAV_BUTTON)) {
 		const { navigate } = target.dataset
 		router.navigate(navigate)
 	}

@@ -1,3 +1,6 @@
+import { errorMessage } from '../const/message.js'
+import { buttonSelector, elementSelector, inputSelector } from '../const/selector.js'
+
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
@@ -221,7 +224,9 @@ export class ProductsManageMenu extends HTMLElement {
 
 	connectedCallback() {
 		this.renderProducts()
-		this.shadowRoot.querySelector('#product-add-button').addEventListener('click', this.handleSubmittedProduct)
+		this.shadowRoot
+			.querySelector(buttonSelector.PRODUCT_ADD_BUTTON)
+			.addEventListener('click', this.handleSubmittedProduct)
 	}
 
 	getLocalStorageProducts() {
@@ -258,16 +263,16 @@ export class ProductsManageMenu extends HTMLElement {
 
 	handleSubmittedProduct = () => {
 		const [name, price, quantity] = [
-			this.shadowRoot.querySelector('#product-name-input').value,
-			this.shadowRoot.querySelector('#product-price-input').value,
-			this.shadowRoot.querySelector('#product-quantity-input').value,
+			this.shadowRoot.querySelector(inputSelector.PRODUCT_NAME_INPUT).value,
+			this.shadowRoot.querySelector(inputSelector.PRODUCT_PRICE_INPUT).value,
+			this.shadowRoot.querySelector(inputSelector.PRODUCT_QUANTITY).value,
 		]
 
 		try {
-			if (!this.isProductNameInputValid(name)) throw Error(`입력한 상품 이름이 유효하지 않습니다. 입력값 : ${name} `)
-			if (!this.isProductPriceInputValid(price)) throw Error(`입력한 상품 가격이 유효하지 않습니다. 입력값 : ${price} `)
+			if (!this.isProductNameInputValid(name)) throw Error(errorMessage.INVALID_PRODUCT_NAME_INPUT_MESSSAGE(name))
+			if (!this.isProductPriceInputValid(price)) throw Error(errorMessage.INVALID_PRODUCT_PRICE_INPUT_MESSAGE(price))
 			if (!this.isProductQuantityInputValid(quantity))
-				throw Error(`입력한 상품 수량이 유효하지 않습니다. 입력값 : ${quantity} `)
+				throw Error(errorMessage.INVALID_PRODUCT_PRICE_QUANTITY_MESSAGE(quantity))
 
 			if (this.findProductByIndex(name) !== -1) {
 				this.replaceTableRow(name, price, quantity)
@@ -292,7 +297,7 @@ export class ProductsManageMenu extends HTMLElement {
 		$productPrice.textContent = price
 		$productQuantity.textContent = quantity
 
-		$row.classList.add('product-inventory')
+		$row.classList.add(elementSelector.PRODUCT_INVENTORY_ROW)
 		$row.append($productName)
 		$row.append($productPrice)
 		$row.append($productQuantity)
@@ -301,7 +306,7 @@ export class ProductsManageMenu extends HTMLElement {
 	}
 
 	replaceTableRow(name, price, quantity) {
-		const $table = this.shadowRoot.querySelector('#product-inventory-container')
+		const $table = this.shadowRoot.querySelector(elementSelector.PRODUCT_INVENTORY_CONTAINER)
 		const productIndex = this.findProductByIndex(name)
 		const currentRow = $table.children[productIndex]
 		const newRow = this.createProductRow(name, price, quantity)
@@ -310,7 +315,7 @@ export class ProductsManageMenu extends HTMLElement {
 	}
 
 	addTableRow(name, price, quantity) {
-		const $table = this.shadowRoot.querySelector('#product-inventory-container')
+		const $table = this.shadowRoot.querySelector(elementSelector.PRODUCT_INVENTORY_CONTAINER)
 		const $row = this.createProductRow(name, price, quantity)
 
 		$table.append($row)
